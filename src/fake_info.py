@@ -56,8 +56,14 @@ class FakeInfo:
         
         # The CPR must end in an even number for females, odd for males
         final_digit = random.randint(0, 9)
-        if self.gender == self.GENDER_FEMININE and final_digit % 2 == 1:
-            final_digit += 1
+        if self.gender == self.GENDER_FEMININE:
+            # Ensure even for females
+            if final_digit % 2 == 1:
+                final_digit -= 1
+        else:
+            # Ensure odd for males
+            if final_digit % 2 == 0:
+                final_digit += 1
         
         self.cpr = (
             self.birth_date[8:10] +
