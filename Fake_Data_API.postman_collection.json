@@ -1,0 +1,282 @@
+{
+  "info": {
+    "_postman_id": "fake-data-api-collection",
+    "name": "Fake Data Generator API",
+    "description": "Complete API test collection for the Fake Data Generator endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "CPR Endpoints",
+      "item": [
+        {
+          "name": "Get Single CPR",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cpr",
+              "host": ["{{base_url}}"],
+              "path": ["cpr"]
+            },
+            "description": "Generate a single CPR number"
+          },
+          "response": []
+        },
+        {
+          "name": "Get CPR with Name and Gender",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cpr-name-gender",
+              "host": ["{{base_url}}"],
+              "path": ["cpr-name-gender"]
+            },
+            "description": "Get CPR along with full name and gender"
+          },
+          "response": []
+        },
+        {
+          "name": "Get CPR with Full Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cpr-name-gender-dob",
+              "host": ["{{base_url}}"],
+              "path": ["cpr-name-gender-dob"]
+            },
+            "description": "Get CPR with name, gender, and date of birth"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Name and Gender Endpoints",
+      "item": [
+        {
+          "name": "Get Name and Gender",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/name-gender",
+              "host": ["{{base_url}}"],
+              "path": ["name-gender"]
+            },
+            "description": "Generate a fake name and gender"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Name, Gender, and DOB",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/name-gender-dob",
+              "host": ["{{base_url}}"],
+              "path": ["name-gender-dob"]
+            },
+            "description": "Generate name, gender, and date of birth"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Address and Phone Endpoints",
+      "item": [
+        {
+          "name": "Get Address",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/address",
+              "host": ["{{base_url}}"],
+              "path": ["address"]
+            },
+            "description": "Generate a fake Danish address"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Phone Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/phone",
+              "host": ["{{base_url}}"],
+              "path": ["phone"]
+            },
+            "description": "Generate a fake Danish phone number"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Person Endpoints",
+      "item": [
+        {
+          "name": "Get Single Person",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/person",
+              "host": ["{{base_url}}"],
+              "path": ["person"]
+            },
+            "description": "Get a complete fake person object with all information"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Multiple Persons (5)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/person?n=5",
+              "host": ["{{base_url}}"],
+              "path": ["person"],
+              "query": [
+                {
+                  "key": "n",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Get 5 fake persons"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Multiple Persons (10)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/person?n=10",
+              "host": ["{{base_url}}"],
+              "path": ["person"],
+              "query": [
+                {
+                  "key": "n",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get 10 fake persons"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Maximum Persons (100)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/person?n=100",
+              "host": ["{{base_url}}"],
+              "path": ["person"],
+              "query": [
+                {
+                  "key": "n",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Get maximum allowed 100 fake persons"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Error Cases",
+      "item": [
+        {
+          "name": "Invalid Query Parameter (n=0)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/person?n=0",
+              "host": ["{{base_url}}"],
+              "path": ["person"],
+              "query": [
+                {
+                  "key": "n",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Should return 400 error (n=0 not allowed)"
+          },
+          "response": []
+        },
+        {
+          "name": "Exceeds Maximum Persons (n=101)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/person?n=101",
+              "host": ["{{base_url}}"],
+              "path": ["person"],
+              "query": [
+                {
+                  "key": "n",
+                  "value": "101"
+                }
+              ]
+            },
+            "description": "Should return 400 error (exceeds max 100)"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/invalid",
+              "host": ["{{base_url}}"],
+              "path": ["invalid"]
+            },
+            "description": "Should return 404 error for invalid endpoint"
+          },
+          "response": []
+        },
+        {
+          "name": "Wrong HTTP Method (POST to /cpr)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cpr",
+              "host": ["{{base_url}}"],
+              "path": ["cpr"]
+            },
+            "description": "Should return 405 error (method not allowed)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}
