@@ -4,6 +4,8 @@ DB class - Encapsulates a connection to the database.
 @author  Arturo Mora-Rioja
 @version 1.0.0 August 2020
 @version 2.0.0 March 2026 Adaptation to Docker
+@converted by Asger Bergøe to Python from the original PHP implementation by Arturo Mora-Rioja
+@version 2.0.0 March 2026 Adaptation to Docker
 """
 import mysql.connector
 from mysql.connector import Error

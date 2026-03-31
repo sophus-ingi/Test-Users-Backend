@@ -1,16 +1,42 @@
 # Fake Data Generator
 
 ## Purpose
-Sample PHP object-oriented REST API that generates fake data of nonexistent Danish persons.
+REST API that generates fake data of nonexistent Danish persons. Originally built in PHP, now converted to **Python with Flask** for improved maintainability and performance.
 
 ## Dependencies
 
 - The fake persons' first name, last name, and gender are extracted from the file `data/person-names.json`.
 - The fake persons' postal code and town are extracted from the MariaDB/MySQL database `addresses`.
+- Python dependencies listed in `requirements.txt`: Flask, mysql-connector-python, pytest
 
 ## Usage
-- Start: `docker compose up --build -d`
-- Stop: `docker compose down -v`
+
+### Option 1: Run with Docker (Recommended)
+```bash
+docker compose up --build -d    # Start
+docker compose down -v          # Stop
+```
+
+### Option 2: Run Python Directly
+
+**Install dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+**Set environment variables (Windows PowerShell):**
+```powershell
+$env:DB_HOST = "localhost"
+$env:DB_NAME = "addresses"
+$env:DB_USER = "root"
+$env:DB_PASSWORD = "yourpassword"
+```
+
+**Run the Flask server:**
+```bash
+python app.py
+```
+The API will be available at `http://localhost:5000`
 
 ## API Endpoints
 |Method|Endpoint|
@@ -107,52 +133,72 @@ Sample PHP object-oriented REST API that generates fake data of nonexistent Dani
 ]
 ```
 
+## Migration from PHP to Python
+
+This project has been **successfully converted from PHP to Python 3** with Flask. For detailed information about the migration, see [PYTHON_MIGRATION.md](PYTHON_MIGRATION.md).
+
+### Key Changes:
+- **Framework**: PHP → Python Flask
+- **Database Driver**: PDO → mysql-connector-python
+- **File Structure**: `src/*.py` replaces `src/*.php`
+- **Testing**: Added pytest for unit and integration tests
+- **API Endpoints**: All endpoints remain compatible
+
 ## Class `FakeInfo` - Public methods
 
-```php
-- getCPR(): string
-- getFullNameAndGender(): array
-- getFullNameGenderAndBirthDate(): array
-- getCprFullNameAndGender(): array
-- getCprFullNameGenderAndBirthDate(): array
-- getAddress(): string
-- getPhoneNumber(): string
-- getFakePerson(): array
-- getFakePersons(int $amount): array
+```python
+- get_cpr() -> str
+- get_full_name_and_gender() -> dict
+- get_full_name_gender_and_birth_date() -> dict
+- get_cpr_full_name_and_gender() -> dict
+- get_cpr_full_name_gender_and_birth_date() -> dict
+- get_address() -> dict
+- get_phone_number() -> str
+- get_fake_person() -> dict
+- get_fake_persons(amount: int) -> list
 ```
 
 ## Sample Class Output
 
-```php
-echo '<pre>';
-$fakeInfo = new FakeInfo;
-print_r($fakeInfo->getFakePersons());
+```python
+from src.fake_info import FakeInfo
+
+fake_info = FakeInfo()
+fake_persons = fake_info.get_fake_persons(1)
+print(fake_persons)
 ```
 
-Output
-```php
-Array
-(
-    [CPR] => 1909743965
-    [firstName] => Anton D.
-    [lastName] => Jespersen
-    [gender] => male
-    [birthDate] => 1974-09-19
-    [address] => Array
-        (
-            [street] => WTquWUqMiHLBKXcEÆnMpqhdGæzlrødfAAAJuGGXø
-            [number] => 456
-            [floor] => 61
-            [door] => th
-            [postal_code] => 3650
-            [town_name] => Ølstykke
-        )
-    [phoneNumber] => 55129415
-)
+Output:
+```json
+[
+    {
+        "CPR": "1909743965",
+        "firstName": "Anton D.",
+        "lastName": "Jespersen",
+        "gender": "male",
+        "birthDate": "1974-09-19",
+        "address": {
+            "street": "WTquWUqMiHLBKXcEÆnMpqhdGæzlrødfAAAJuGGXø",
+            "number": "456",
+            "floor": 61,
+            "door": "th",
+            "postal_code": "3650",
+            "town_name": "Ølstykke"
+        },
+        "phoneNumber": "55129415"
+    }
+]
+```
+
+## Testing
+
+Run the test suite using pytest:
+```bash
+pytest test_backend.py -v
 ```
 
 ## Tools
-PHP8 / MariaDB
+Python 3 / Flask / MySQL
 
 ## Author
 Arturo Mora-Rioja
