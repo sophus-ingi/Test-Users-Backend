@@ -18,10 +18,11 @@ jobs:
           MYSQL_ROOT_PASSWORD: ''
           MYSQL_DATABASE: addresses
         options: >-
-          --health-cmd="mariadb-admin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+          --health-cmd="mysqld_safe --ping"
+          --health-interval=5s
+          --health-timeout=10s
+          --health-retries=5
+          --cap-add=SYS_NICE
         ports:
           - 3306:3306
 
@@ -46,10 +47,7 @@ jobs:
         DB_NAME: addresses
         DB_USER: root
         DB_PASSWORD: ''
-      run: |
-        # Wait for MySQL to be ready
-        sleep 10
-        mysql -h localhost -u root addresses < db/addresses.sql
+      run: python scripts/init_db.py
     
     - name: Run unit tests
       env:
