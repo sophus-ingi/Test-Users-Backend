@@ -1,7 +1,7 @@
 # Submission Summary - Software Quality & Testing Project
 
 **Course**: Software Quality & Testing  
-**Student**: [Your Name]  
+**Student**: Asger Bergøe  
 **Project**: Fake Data Generator API - Python Conversion & Testing  
 **Date Completed**: April 1, 2026  
 **Submission Deadline**: April 6, 2026, 23:59  
