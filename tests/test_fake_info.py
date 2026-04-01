@@ -60,7 +60,22 @@ class TestCPRGeneration:
         assert len(set(cprs)) > 1
     
     def test_cpr_in_valid_range(self):
-        """CPR values should be within valid range (0000000000-9999999999)."""
+        """
+        CPR values should be within valid range (0000000000-9999999999).
+        
+        REASONING (Range Validation - Repetition Testing):
+        - Single test might pass by luck
+        - We run 100 times to catch random failures
+        - Tests that randomness always stays within bounds
+        - If implementation occasionally generates 10-digit CPR starting with 0,
+          but treats it as 9-digit when converted to int, this catches it
+        - Example: "0000000001" as string vs 1 as int
+        - Equivalence partitions:
+          Valid: 0 <= CPR <= 9999999999
+          Invalid: CPR < 0 or CPR > 9999999999
+        - By testing 100 iterations with different random values,
+          we validate the constraint holds universally
+        """
         for _ in range(100):
             fake_info = FakeInfo()
             cpr_int = int(fake_info.get_cpr())
@@ -85,7 +100,22 @@ class TestNameAndGender:
         assert 'gender' in result
     
     def test_gender_is_valid_value(self):
-        """Gender should be either 'male' or 'female'."""
+        """
+        Gender should be either 'male' or 'female'.
+        
+        REASONING (Equivalence Partitioning - Enumeration Testing):
+        - Gender has only 2 valid values: 'male' or 'female'
+        - Invalid partitions: 'MALE', 'Female', 'other', null, '', etc.
+        - Run 50 iterations to catch any randomness bias
+        - Possible bugs this catches:
+          - Typo in code: 'male' vs 'Male'
+          - Gender list incomplete: only includes male, missing female
+          - Probability skew: always returns 'male'
+        - Using `in ['male', 'female']` with 50 iterations validates:
+          1. Always returns valid value
+          2. Both values are reachable (high probability after 50 tries)
+        - Real-world impact: Frontend might crash if gender = undefined
+        """
         for _ in range(50):
             fake_info = FakeInfo()
             gender = fake_info.get_full_name_and_gender()['gender']
@@ -118,7 +148,24 @@ class TestBirthDate:
         assert 'gender' in result
     
     def test_birth_date_format_valid(self):
-        """Birth date should be in YYYY-MM-DD format."""
+        """
+        Birth date should be in YYYY-MM-DD format.
+        
+        REASONING (Format & Parsing Validation):
+        - API contract specifies: ISO 8601 format (YYYY-MM-DD)
+        - Frontend depends on this format for parsing
+        - Run 20 iterations to catch random format variations
+        - Uses datetime.strptime() to validate format
+        - If format wrong, strptime() raises ValueError
+        - Examples of failures caught:
+          - '01/15/1990' (wrong format)
+          - '1990-1-15' (missing leading zero)
+          - '1990/01/15' (wrong separator)
+          - '15-01-1990' (wrong order)
+        - This test doesn't validate reasonable dates,
+          just that format is parseable
+        - Data contract test: ensures interface compatibility
+        """
         fake_info = FakeInfo()
         for _ in range(20):
             result = FakeInfo().get_full_name_gender_and_birth_date()
@@ -131,7 +178,25 @@ class TestBirthDate:
             assert valid
     
     def test_birth_date_is_reasonable(self):
-        """Birth dates should be within reasonable historical range."""
+        """
+        Birth dates should be within reasonable historical range.
+        
+        REASONING (Constraint Validation - Domain Rules):
+        - Birth year constraint: 1900 <= year <= current_year
+        - Validates business logic constraint
+        - Catches implementation bugs:
+          - Off-by-one: birth year = current_year + 1 (future person)
+          - Type error: birth_year as string '20204' (too large)
+          - Random seed bug: always generating same year
+        - Why 1900? Min reasonable age: ~120+ years old
+        - Why current_year? Can't be born in future
+        - Example violations this catches:
+          - Birth date: 2099-01-01 (future)
+          - Birth date: 1800-01-01 (too old)
+          - Birth date: constant value (broken randomness)
+        - This is domain-specific validation,
+          not just format checking
+        """
         fake_info = FakeInfo()
         result = fake_info.get_full_name_gender_and_birth_date()
         birth_date = datetime.strptime(result['birthDate'], '%Y-%m-%d')

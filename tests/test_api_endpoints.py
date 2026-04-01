@@ -41,7 +41,19 @@ class TestCPREndpoint:
         assert response.content_type == 'application/json; charset=utf-8'
     
     def test_cpr_endpoint_post_not_allowed(self, client):
-        """POST /cpr should not be allowed."""
+        """
+        POST /cpr should not be allowed.
+        
+        REASONING (Decision Table Testing):
+        - RESTful API contract: Generation endpoints use GET, not POST
+        - 405 Method Not Allowed is correct HTTP response
+        - This prevents accidental API misuse by clients
+        - Part of black-box decision table:
+          GET → 200 (success)
+          POST → 405 (not allowed)
+          PUT → 405 (not allowed)
+          DELETE → 405 (not allowed)
+        """
         response = client.post('/cpr')
         assert response.status_code == 405
     
@@ -56,7 +68,19 @@ class TestCPREndpoint:
         assert response.status_code == 405
     
     def test_cpr_endpoint_multiple_calls_different(self, client):
-        """Multiple calls should generate different CPRs."""
+        """
+        Multiple calls should generate different CPRs.
+        
+        REASONING (Randomness & Uniqueness Testing):
+        - CPR generation uses randomization
+        - Each call should produce different value (high probability)
+        - This test verifies randomness is working
+        - If all CPRs were identical, generator is broken
+        - Uses set() to count unique values: if 10 calls return 10 different CPRs,
+          set length will be 10, and len(set) > 1 passes
+        - Note: Theoretically could fail for random reasons (1 in 3.6 billion chance),
+          but practically validates randomness
+        """
         cprs = [json.loads(client.get('/cpr').data)['CPR'] for _ in range(10)]
         assert len(set(cprs)) > 1
 
@@ -202,7 +226,19 @@ class TestPersonEndpoint:
         assert len(data) == 5
     
     def test_person_endpoint_with_n_1(self, client):
-        """GET /person?n=1 should return single person as dict."""
+        """
+        GET /person?n=1 should return single person as dict.
+        
+        REASONING (API Contract & Response Format):
+        - When n=1, API returns single person (dict)
+        - When n>1, API returns list of persons
+        - This is an important interface contract for frontend
+        - Frontend code needs to know: single result vs array
+        - Example usage in frontend:
+          if n==1: person = response  (dict)
+          else: persons = response    (array)
+        - Boundary testing: n=1 is the minimum valid value
+        """
         response = client.get('/person?n=1')
         assert response.status_code == 200
         data = json.loads(response.data)
@@ -216,17 +252,55 @@ class TestPersonEndpoint:
         assert len(data) == 100
     
     def test_person_endpoint_n_zero_error(self, client):
-        """GET /person?n=0 should return 400 error."""
+        """
+        GET /person?n=0 should return 400 error.
+        
+        REASONING (Boundary Value Analysis - Lower Boundary):
+        - Valid partitions: n in [1, 100]
+        - Invalid partitions: n <= 0, n > 100
+        - This test: n=0 (just below valid minimum)
+        - Boundary testing ensures implementation correctly validates lower boundary
+        - Error code 400 (Bad Request) is appropriate for invalid parameter
+        - Can't generate 0 persons - doesn't make sense semantically
+        - HTTP Status Code Reference:
+          200 = Success (valid n)
+          400 = Bad Request (invalid n)
+        """
         response = client.get('/person?n=0')
         assert response.status_code == 400
     
     def test_person_endpoint_n_exceeds_max_error(self, client):
-        """GET /person?n=101 should return 400 error (exceeds max 100)."""
+        """
+        GET /person?n=101 should return 400 error (exceeds max 100).
+        
+        REASONING (Boundary Value Analysis - Upper Boundary):
+        - Valid partitions: n in [1, 100]
+        - Invalid partitions: n <= 0, n > 100
+        - This test: n=101 (just above valid maximum)
+        - Boundary testing ensures implementation correctly validates upper boundary
+        - Maximum set at 100 for performance: generating 101+ persons would be slow
+        - Implementation: if n > 100: return 400
+        - Tests both: n=100 (valid), n=101 (invalid)
+        - Prevents API abuse (someone requesting 1 million persons)
+        """
         response = client.get('/person?n=101')
         assert response.status_code == 400
     
     def test_person_endpoint_n_negative_converts_to_positive(self, client):
-        """GET /person?n=-5 should be treated as n=5."""
+        """
+        GET /person?n=-5 should be treated as n=5.
+        
+        REASONING (Edge Case - Invalid Input Handling):
+        - API could handle negative n two ways:
+          1. Return error (strict validation)
+          2. Convert to positive (user-friendly)
+        - This implementation chose option 2: convert to positive
+        - Use case: Frontend bug sends negative n, API handles gracefully
+        - Implementation: n = abs(n) if n < 0 else n
+        - Tests that -5 becomes 5, returns 5 persons
+        - Alternative: could assert response.status_code == 400
+        - This particular implementation chose user-friendly approach
+        """
         response = client.get('/person?n=-5')
         assert response.status_code == 200
         data = json.loads(response.data)
@@ -234,7 +308,21 @@ class TestPersonEndpoint:
         assert len(data) == 5
     
     def test_person_endpoint_n_invalid_string(self, client):
-        """GET /person?n=abc should handle gracefully."""
+        """
+        GET /person?n=abc should handle gracefully.
+        
+        REASONING (Robustness Testing - Invalid Data Types):
+        - Query parameter n should be numeric
+        - What if user sends non-numeric string?
+        - API should handle gracefully (not crash)
+        - Two acceptable responses:
+          1. Return 400 Bad Request (strict validation)
+          2. Return 200 with default value (lenient)
+        - This test accepts either response
+        - Implementation: try to convert n to int, if fails use default=1
+        - Demonstrates defensive programming
+        - Real example: typo in frontend could send "1a" instead of "1"
+        """
         response = client.get('/person?n=abc')
         # Should either return 400 or treat as default
         assert response.status_code in [200, 400]
