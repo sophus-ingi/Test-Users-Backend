@@ -27,7 +27,7 @@ class FakeInfo:
         '584', '586', '587', '589', '597', '598', '627', '629', '641', '649', '658', '662', '663', '664', '665',
         '667', '692', '693', '694', '697', '771', '772', '782', '783', '785', '786', '788', '789', '826', '827', '829'
     ]
-    MIN_BULK_PERSONS = 2
+    MIN_BULK_PERSONS = 1
     MAX_BULK_PERSONS = 100
 
     def __init__(self):
@@ -248,9 +248,9 @@ class FakeInfo:
     def get_address(self) -> dict:
         """
         Returns a fake Danish address.
-        @return dict: ['address' => dict with address details]
+        @return dict: dict with address details
         """
-        return {'address': self.address}
+        return self.address
     
     def get_phone_number(self) -> str:
         """
@@ -278,7 +278,7 @@ class FakeInfo:
     def get_fake_persons(self, amount: int = None) -> list:
         """
         Returns information about several fake persons.
-        @param amount: The number of fake persons to generate, between 2 and 100 inclusive
+        @param amount: The number of fake persons to generate, between 1 and 100 inclusive
         @return list: List of fake person information
         """
         if amount is None:

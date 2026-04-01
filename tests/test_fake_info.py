@@ -261,10 +261,8 @@ class TestPhoneNumber:
     
     def test_phone_number_starts_with_valid_prefix(self):
         """Phone number should start with a valid Danish phone prefix."""
-        valid_prefixes = [
-            '2', '30', '31', '40', '41', '42', '50', '51', '52', '53',
-            '60', '61', '71', '81', '91', '92', '93'
-        ]
+        # Use the actual PHONE_PREFIXES from FakeInfo class
+        valid_prefixes = FakeInfo.PHONE_PREFIXES
         for _ in range(50):
             fake_info = FakeInfo()
             phone = fake_info.get_phone_number()
