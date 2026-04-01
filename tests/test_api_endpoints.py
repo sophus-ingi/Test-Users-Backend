@@ -172,20 +172,17 @@ class TestAddressEndpoint:
         response = client.get('/address')
         assert response.status_code == 200
         data = json.loads(response.data)
-        # Address is nested in the response
-        assert 'address' in data
-        address = data['address']
-        assert 'street' in address
-        assert 'number' in address
-        assert 'postal_code' in address
-        assert 'town_name' in address
+        # Address is returned flat (not nested)
+        assert 'street' in data
+        assert 'number' in data
+        assert 'postal_code' in data
+        assert 'town_name' in data
     
     def test_address_postal_code_valid(self, client):
         """Postal code should be 4 digits."""
         response = client.get('/address')
         data = json.loads(response.data)
-        address = data['address']
-        postal_code = address['postal_code']
+        postal_code = data['postal_code']
         assert len(postal_code) == 4
         assert postal_code.isdigit()
 
