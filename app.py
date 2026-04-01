@@ -57,6 +57,12 @@ def after_request(response):
     return response
 
 
+@app.errorhandler(405)
+def method_not_allowed(e):
+    """Handle 405 Method Not Allowed errors."""
+    return jsonify({'error': 'Incorrect HTTP method'}), 405
+
+
 @app.route('/', defaults={'path': ''}, methods=['GET'])
 @app.route('/<path:path>', methods=['GET'])
 def api_handler(path):

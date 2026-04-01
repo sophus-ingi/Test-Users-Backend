@@ -3,6 +3,9 @@ Town class - Generates random postal codes and town names.
 
 @author  Arturo Mora-Rioja
 @version 1.0.0 March 2023
+@converted by Asger Bergøe to Python from the original PHP implementation by Arturo Mora-Rioja
+@version 2.0.0 March 2026 Adaptation to Docker
+
 """
 import random
 from src.db import DB
