@@ -131,14 +131,13 @@ class TestFakeInfo:
         fake = FakeInfo()
         result = fake.get_address()
         assert isinstance(result, dict)
-        assert 'address' in result
-        address = result['address']
-        assert 'street' in address
-        assert 'number' in address
-        assert 'floor' in address
-        assert 'door' in address
-        assert 'postal_code' in address
-        assert 'town_name' in address
+        # Address is returned as flat dictionary, not nested
+        assert 'street' in result
+        assert 'number' in result
+        assert 'floor' in result
+        assert 'door' in result
+        assert 'postal_code' in result
+        assert 'town_name' in result
     
     def test_get_phone_number(self):
         """Test getting phone number."""
@@ -276,14 +275,13 @@ class TestFlaskAPI:
         response = client.get('/address')
         assert response.status_code == 200
         data = response.get_json()
-        assert 'address' in data
-        address = data['address']
-        assert 'street' in address
-        assert 'number' in address
-        assert 'floor' in address
-        assert 'door' in address
-        assert 'postal_code' in address
-        assert 'town_name' in address
+        # Address is returned as flat dictionary, not nested
+        assert 'street' in data
+        assert 'number' in data
+        assert 'floor' in data
+        assert 'door' in data
+        assert 'postal_code' in data
+        assert 'town_name' in data
     
     def test_phone_endpoint(self, client):
         """Test /phone endpoint."""
