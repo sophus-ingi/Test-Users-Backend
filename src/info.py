@@ -10,6 +10,7 @@ class Info:
     DB_NAME = 'addresses'
     USER = 'root'
     PASSWORD = ''
+    PORT = 3307  # Default port for local testing
 
     @staticmethod
     def host() -> str:
@@ -27,3 +28,8 @@ class Info:
     def password() -> str:
         value = os.getenv('DB_PASSWORD')
         return value if value is not None else Info.PASSWORD
+
+    @staticmethod
+    def port() -> int:
+        value = os.getenv('DB_PORT')
+        return int(value) if value is not None else Info.PORT

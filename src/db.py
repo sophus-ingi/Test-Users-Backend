@@ -20,6 +20,7 @@ class DB:
         try:
             self.connection = mysql.connector.connect(
                 host=Info.host(),
+                port=Info.port(),
                 database=Info.db_name(),
                 user=Info.user(),
                 password=Info.password(),
