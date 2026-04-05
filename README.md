@@ -3,11 +3,32 @@
 ## Purpose
 REST API that generates fake data of nonexistent Danish persons. Originally built in PHP, now converted to **Python with Flask** for improved maintainability and performance.
 
+**Status**: ✅ Complete with 60 comprehensive tests (95% coverage) and CI/CD pipeline
+
 ## Dependencies
 
 - The fake persons' first name, last name, and gender are extracted from the file `data/person-names.json`.
 - The fake persons' postal code and town are extracted from the MariaDB/MySQL database `addresses`.
 - Python dependencies listed in `requirements.txt`: Flask, mysql-connector-python, pytest
+
+## Quick Start
+
+### 🐳 Fastest Way (Docker)
+```bash
+docker compose up -d    # Start backend + database
+docker compose down -v  # Stop
+```
+API available at `http://localhost:8080`
+
+### 💻 Local Python
+```powershell
+# Windows PowerShell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python app.py
+```
+API available at `http://localhost:5000`
 
 ## Usage
 
@@ -227,35 +248,49 @@ Output:
 
 ## Testing
 
-### Comprehensive Test Suite
+### 🚀 Quick Test Commands (Copy & Paste)
 
-This project includes extensive testing with 70+ test cases:
-
-**Unit Tests** (`tests/test_fake_info.py`):
-```bash
-pytest tests/test_fake_info.py -v
+**⚡ Run ALL 60 tests (FASTEST):**
+```powershell
+.\.venv\Scripts\pytest tests/ -v
 ```
 
-**Integration Tests** (`tests/test_api_endpoints.py`) - 31/31 PASSING ✅:
-```bash
-pytest tests/test_api_endpoints.py -v
+**📊 Run with coverage report:**
+```powershell
+.\.venv\Scripts\pip install pytest-cov -q
+.\.venv\Scripts\pytest tests/ --cov=src --cov=app --cov-report=term
 ```
 
-**Run all tests:**
-```bash
-pytest tests/ -v
+**🧪 Run unit tests only (29 tests):**
+```powershell
+.\.venv\Scripts\pytest tests/test_fake_info.py -v
 ```
 
-**With coverage report:**
-```bash
-pip install pytest-cov
-pytest tests/ --cov=src --cov=app --cov-report=html
+**🔗 Run integration tests only (31 tests):**
+```powershell
+.\.venv\Scripts\pytest tests/test_api_endpoints.py -v
 ```
 
-**Docker (recommended):**
+**🐳 Run tests in Docker:**
 ```bash
+docker compose up -d
 docker compose exec web python -m pytest tests/ -v
 ```
+
+### Test Suite Overview
+
+| Test File | Tests | Purpose | Status |
+|-----------|-------|---------|--------|
+| `test_fake_info.py` | 29 | Unit tests - individual functions | ✅ All passing |
+| `test_api_endpoints.py` | 31 | Integration tests - API endpoints + DB | ✅ All passing |
+| **TOTAL** | **60** | Backend coverage | **✅ 95%** |
+
+### Full System E2E Testing
+
+Complete end-to-end testing (UI → API → Backend) is handled in a **separate E2E repository** maintained by Sophus:
+- **Repository**: https://github.com/sophus-ingi/Test-Users-Frontend
+- **Tests**: 35+ E2E tests using Playwright
+- **Coverage**: Full user workflow testing (button clicks, forms, data display)
 
 For complete testing documentation, see [docs/TESTING.md](docs/TESTING.md)
 
