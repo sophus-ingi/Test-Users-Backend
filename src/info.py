@@ -10,7 +10,7 @@ class Info:
     DB_NAME = 'addresses'
     USER = 'root'
     PASSWORD = ''
-    PORT = 3307  # Default port for local testing
+    PORT = 3306  # Default Docker port
 
     @staticmethod
     def host() -> str:
