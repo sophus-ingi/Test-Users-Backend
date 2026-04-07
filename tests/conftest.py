@@ -11,14 +11,18 @@ import pytest
 def pytest_configure(config):
     """Configure pytest and set up test environment."""
     # Set up test database environment variables
-    os.environ['DB_HOST'] = os.getenv('DB_HOST', 'db')
+    # Default to localhost for local development (conftest smart port sets 3307)
+    # CI/CD will override both DB_HOST and DB_PORT via environment variables
+    os.environ['DB_HOST'] = os.getenv('DB_HOST', 'localhost')
     os.environ['DB_NAME'] = os.getenv('DB_NAME', 'addresses')
     os.environ['DB_USER'] = os.getenv('DB_USER', 'root')
     os.environ['DB_PASSWORD'] = os.getenv('DB_PASSWORD', '')
     
-    # Set port: 3306 for Docker/CI, 3307 for local localhost
+    # Smart port selection:
+    # - localhost (local dev) → use 3307 (exposed from Docker)
+    # - other hosts (CI/CD with explicit port) → use provided port or 3306
     if 'DB_PORT' not in os.environ:
-        db_host = os.environ.get('DB_HOST', 'db')
+        db_host = os.environ.get('DB_HOST', 'localhost')
         os.environ['DB_PORT'] = '3307' if db_host == 'localhost' else '3306'
     
     os.environ['FLASK_ENV'] = 'testing'
